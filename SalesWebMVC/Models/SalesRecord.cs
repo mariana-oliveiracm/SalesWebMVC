@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalesWebMVC.Models.Enums;
+using System;
 
 namespace SalesWebMVC.Models
 {
@@ -7,16 +8,15 @@ namespace SalesWebMVC.Models
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public double Amount { get; set; }
-        public SalesRecord Status { get; set; }
+        public SaleStatus StatusSale { get; set; }
         public Seller Seller { get; set; }
-        
+
         public SalesRecord() { }
-        public SalesRecord(int id, DateTime date, double amount, SalesRecord status, Seller seller)
+        public SalesRecord(DateTime date, double amount, SaleStatus statusSale, Seller seller)
         {
-            Id = id;
             Date = date;
             Amount = amount;
-            Status = status;
+            StatusSale = statusSale;
             Seller = seller;
         }
     }

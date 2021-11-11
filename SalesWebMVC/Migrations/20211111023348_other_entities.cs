@@ -38,18 +38,12 @@ namespace SalesWebMVC.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Amount = table.Column<double>(type: "float", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: true),
+                    StatusSale = table.Column<int>(type: "int", nullable: false),
                     SellerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SalesRecord", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SalesRecord_SalesRecord_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "SalesRecord",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_SalesRecord_Seller_SellerId",
                         column: x => x.SellerId,
@@ -62,11 +56,6 @@ namespace SalesWebMVC.Migrations
                 name: "IX_SalesRecord_SellerId",
                 table: "SalesRecord",
                 column: "SellerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SalesRecord_StatusId",
-                table: "SalesRecord",
-                column: "StatusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Seller_DepartmentId",

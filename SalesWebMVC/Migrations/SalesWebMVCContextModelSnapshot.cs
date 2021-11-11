@@ -50,14 +50,12 @@ namespace SalesWebMVC.Migrations
                     b.Property<int?>("SellerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<int>("StatusSale")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SellerId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("SalesRecord");
                 });
@@ -97,13 +95,7 @@ namespace SalesWebMVC.Migrations
                         .WithMany("Sales")
                         .HasForeignKey("SellerId");
 
-                    b.HasOne("SalesWebMVC.Models.SalesRecord", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId");
-
                     b.Navigation("Seller");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("SalesWebMVC.Models.Seller", b =>
