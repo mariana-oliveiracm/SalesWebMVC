@@ -2,6 +2,7 @@
 using SalesWebMVC.Models;
 using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
+using SalesWebMVC.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,8 @@ namespace SalesWebMVC.Controllers
         }
         public IActionResult Index()
         {
-            var list = _sellerService.FindAll();
-            return View(list);
+            var sellersList = _sellerService.FindAll();
+            return View(sellersList);
         }
 
         public IActionResult Create()
@@ -36,32 +37,84 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
-            _sellerService.Insert(seller);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _sellerService.Insert(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
         public IActionResult Delete(int? id)
         {
             if (id == null) return NotFound();
-            var obj = _sellerService.FindById(id.Value);
-            if (obj == null) return NotFound();
-            return View(obj);
-            
+            var seller = _sellerService.FindById(id.Value);
+            if (seller == null) return NotFound();
+            return View(seller);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
-        {
-            _sellerService.Remove(id);
-            return RedirectToAction(nameof(Index));
+        {            
+            try
+            {
+                _sellerService.Remove(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
         
         public IActionResult Details(int? id)
         {
             if (id == null) return NotFound();
-            var obj = _sellerService.FindById(id.Value);
-            if (obj == null) return NotFound();
-            return View(obj);
+            var seller = _sellerService.FindById(id.Value);
+            if (seller == null) return NotFound();
+            return View(seller);
+        }
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == null) return NotFound();
+            var seller = _sellerService.FindById(id.Value);
+            if (seller == null) return NotFound();
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+            
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if (id != seller.Id) return BadRequest();
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
     }
 }
