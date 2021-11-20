@@ -22,9 +22,10 @@ namespace SalesWebMVC.Controllers
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        public IActionResult About()
         {
+            ViewData["About"] = "Salles Web MVC App from C# Course";
+            ViewData["Author"] = "Mariana OC Machado";
             return View();
         }
 
